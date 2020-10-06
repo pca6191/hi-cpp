@@ -1,0 +1,69 @@
+class BatteryInfo {
+public:
+
+  double voltage_;
+  double current_;
+  int remaining_;
+};
+//-------------------------------------------------------
+
+class BatteryUpdator {
+public:
+  BatteryUpdator(const std::string bat_type) :
+    battery_type_(bat_type)
+  {
+  }
+
+  bool update(BatteryInfo *info)
+  {
+    if (battery_type_ == "fake") {
+      // do .....
+      info->voltage_ = 28.0;
+    }
+
+    else if (battery_type_ == "LiFeXXX") {
+      //do ...
+      info->voltage_ = 28.0;
+    }
+
+    return true;
+  }
+
+private:
+  std::string battery_type_;
+};
+//-------------------------------------------------------
+
+class Battery {
+public:
+  Battery()
+  { }
+
+  bool update_device(BatteryUpdator &bat_updator)
+  {
+    return bat_updator.update(&battery_info_);
+  }
+
+  void pub_info() {
+    // pub battery_info_ --> (voltage, current ...)
+    std::cout << "voltage " << battery_info_.voltage_ << std::endl;
+  }
+
+private:
+  BatteryInfo battery_info_;
+};
+//-------------------------------------------------------
+
+int main()
+{
+  // 假設從 launch file 得到 battery_type = "fake"
+  std::string battery_type("fake");
+
+  Battery battery;
+  BatteryUpdator updator(battery_type);
+
+  while(true) {
+    battery.update_device (updator);
+    battery.pub_info();
+  }
+}
